@@ -9,26 +9,32 @@
 
 
 
+<h2>Add new document</h2>
+<div class="form-group">
+	<%= form_for :article, url: home_create_path do |f| %>
+		<p>
+			<%= f.text_field :title, class: "form-control", placeholder: "Title"%>
+		</p>
 
+		<p>
+			<%= f.text_field :author,  class: "form-control", placeholder: "Author"%>
+		</p>
 
-<h1 class="title">News</h1>
-<div class="container">
-  <% @articles.first(10).each do |article| %>
-    <div class="container">
-      <p><%= article["title"] %></p>
-    </div>
+		<p>
+			<%= f.text_area :text,  class: "form-control", placeholder: "Text" %>
+		</p>
 
-    <div class="container">
-      <p><%= article["author"]%></p>
-    </div>
+    <p>
+      <%= f.file_field :image, class: "form-control", placeholder: "Image" %>
+    </p>
 
-    <div class="container">
-      <p><%= article["text"]%></p>
-    </div>
+	<br>
+		<p>
+			<%= button_tag(type: 'submit', class: "btn btn-success form-control") do %>
 
-    <div class="container">
-      <img src="data:image/png;base64{<%= article["image"] %>}" />
-    </div>
-    <hr>
-  <% end %>
+			 <i class="glyphicon glyphicon-floppy-disk"></i>  Save
+			<% end %>
+		</p>
+
+	<% end %>
 </div>
