@@ -9,5 +9,7 @@ Rails.application.routes.draw do
 
   post 'home/create'
 
+  post 'home/comment'
+  
   resources :article
 end

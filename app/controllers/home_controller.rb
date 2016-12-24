@@ -3,12 +3,8 @@ require 'BSON'
 class HomeController < ApplicationController
   def index
     db = Mongo::Client.new([ '192.168.56.12:27017' ], :database => 'nmbp')
-    @articles = db[:articles].find()
-    first = @articles.first["image"].data
-    #p first
-    buffer = BSON::ByteBuffer.new(first)
-    #buffer = BSON::ByteBuffer.new(@articles.first["image"])
-    @image_b = BSON::Binary.from_bson(buffer)
+    @articles = db[:articles].find().sort({_id:-1}).limit(10)
+    db.close
   end
 
   #def add
@@ -19,21 +15,34 @@ class HomeController < ApplicationController
   def create
       @article = Article.new(params.require(:article).permit(:title, :author, :text, :image))
 
+      exstension = @article.image.content_type.split('/')[1]
+      tmp = {title: @article.title, author: @article.author, text: @article.text, comments: []}
+
       db = Mongo::Client.new([ '192.168.56.12:27017' ], :database => 'nmbp')
       articles = db[:articles]
 
-      f = File.read(@article.image.tempfile, :mode => 'rb')
-      img = BSON::Binary.new(f, :generic)
-      #f = File.open(Rails.root.join('public', 'uploads', @article.image.original_filename), 'wb')
-      #p f#@article.image.tempfile
-      p @article.title
-      p @article.author
-      p @article.text
-      tmp = {title: @article.title, author: @article.author, text: @article.text, image: img, comments: []}
-      n = articles.insert_one(tmp)
+      id = articles.insert_one(tmp).inserted_id.to_s
+      file = File.open("app/assets/stylesheets/" + id + "." +  exstension, 'wb') {|f| f.write(@article.image.read) }
+      db.close
+  end
 
-      p "Ovo je broj spremljenih u bazu."
+  def comment
+    j = ActiveSupport::JSON
+    id = params["id"]
+    comment = params["comment"]
+    timestamp = Time.now
 
-      p n
+
+    db = Mongo::Client.new([ '192.168.56.12:27017' ], :database => 'nmbp')
+    articles = db[:articles]
+    articles.update_one({:_id => BSON::ObjectId("#{id}")}, '$push' => { comments: {timestamp: timestamp, text: comment}})
+    db.close
+    timestamp = timestamp.strftime("%a %b %d %Y %H:%M")
+
+    result = j.encode({:timestamp => timestamp, :text => comment})
+    respond_to do |format|
+      format.json {render json: result}
+    end
+
   end
 end

@@ -13,3 +13,26 @@
  *= require_tree .
  *= require_self
  */
+.header{
+  background: rgb(236, 244, 255);
+  font-size: 100px;
+}
+
+ .inline-news-left{
+   display: inline-block;
+   width: 50%;
+   vertical-align: middle;
+   margin-right: 2%;
+ }
+
+ .inline-news-right{
+   display: inline-block;
+   width: 40%;
+   vertical-align: middle;
+ }
+
+ .form-control-inline {
+     min-width: 0;
+     width: auto;
+     display: inline;
+ }
