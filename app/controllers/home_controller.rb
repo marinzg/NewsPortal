@@ -1,11 +1,24 @@
 require 'mongo'
 require 'BSON'
 class HomeController < ApplicationController
+
   def index
     db = Mongo::Client.new([ '192.168.56.12:27017' ], :database => 'nmbp')
     @articles = db[:articles].find().sort({_id:-1}).limit(10)
+
+    tmp = Strings.new
+    res = db[:articles].find().map_reduce(tmp.authors_map, tmp.authors_reduce).finalize(tmp.authors_finalize)
+    p res.find().entries
     db.close
   end
+
+
+  #MAPREDUCE #1
+  #tmp = Strings.new
+  #res =  db[:articles].find().map_reduce(tmp.comments_map, tmp.comments_reduce).out(:replace => "newArticles")
+  #ids = res.find().entries.map{|x| x["_id"]}
+  #@articles = db[:articles].find(:_id => {'$in' => ids})
+
 
   #def add
   #  @article = Article.new
