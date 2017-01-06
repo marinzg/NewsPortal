@@ -83,10 +83,7 @@ class Strings
       function(key, value){
         var tmp = value.words.sort(function(a, b){return b.count - a.count;});
         tmp = tmp.slice(0,10);
-        print(key);
-        tmp.forEach(function(v) {
-          print("     " + v.word + " : " + v.count);
-          });
+        return tmp;
       }
     }.gsub(/\n/, '').gsub(/\s+/, ' ')
   end

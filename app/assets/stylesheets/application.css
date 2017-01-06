@@ -14,8 +14,7 @@
  *= require_self
  */
 .header{
-  background: rgb(236, 244, 255);
-  font-size: 100px;
+  font-size: 80px;
 }
 
  .inline-news-left{
@@ -35,4 +34,8 @@
      min-width: 0;
      width: auto;
      display: inline;
+ }
+
+ .word-list{
+   margin-left: 5%;
  }

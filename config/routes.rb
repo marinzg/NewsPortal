@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   post 'home/create'
 
   post 'home/comment'
-  
+
+  post 'home/wordsForAuthors'
+
+
   resources :article
 end

@@ -1,16 +1,35 @@
-<h1 class ="header" align="center">News</h1>
+<div class="container">
+  <div class="page-header">
+    <h1 class ="header" >NewsPortal</h1>
+  </div>
+</div>
 <br>
 <br>
+<div class="container">
+    Sort by &nbsp;
+    <select id="sortSelect" onChange="selectSort()">
+      <option value="time" >Time</option>
+      <option value="noOfComments">Number of comments</option>
+    </select>
+</div>
 <div class="container">
   <% @articles.each do |article| %>
   <div>
     <div class="inline-news-left">
       <h2><%= article["title"] %></h2>
       <p vertical-align="middle"><%= article["text"]%></p>
-      <p>Author: <%= article["author"]%></p>
+
     </div>
     <div class="inline-news-right" >
       <img style="width:128%; height:72%" src= <%= image_url(article["_id"]) %>/>
+    </div>
+    <p>
+      <span id="<%= article["author"].gsub(/\s/, '_')%>_<%= article["_id"] %>_button" onClick="authorsWordCount(id)" class="glyphicon glyphicon-chevron-right"/>
+      Author: <%= article["author"]%>
+    </p>
+    <div id="<%= article["author"].gsub(/\s/, '_')%>_<%= article["_id"] %>" style="display:none">
+      &nbsp; &nbsp;&nbsp; <u>Top 10 words for this author:</u>
+      <div class = "<%= article["author"].gsub(/\s/, '_')%> word-list"></div>
     </div>
     <hr>
     <div>

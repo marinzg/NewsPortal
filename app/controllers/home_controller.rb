@@ -3,8 +3,20 @@ require 'BSON'
 class HomeController < ApplicationController
 
   def index
+    type = params["type"]
+    if(type == nil)
+      type = 'time'
+    end
+
     db = Mongo::Client.new([ '192.168.56.12:27017' ], :database => 'nmbp')
-    @articles = db[:articles].find().sort({_id:-1}).limit(10)
+
+    if (type == 'noOfComments')
+      @articles = db[:articles].find().sort({_id:-1}).limit(10)
+    else
+      @articles = db[:articles].find().sort({_id:-1}).limit(10)
+    end
+
+
     db.close
   end
 
@@ -15,15 +27,6 @@ class HomeController < ApplicationController
   #ids = res.find().entries.map{|x| x["_id"]}
   #@articles = db[:articles].find(:_id => {'$in' => ids})
 
-  #MAPREDUCE #2
-  #tmp = Strings.new
-  #res = db[:articles].find().map_reduce(tmp.authors_map, tmp.authors_reduce).finalize(tmp.authors_finalize)
-  #p res.find().entries
-
-  #def add
-  #  @article = Article.new
-  #  p @article.title
-  #end
 
   def create
       @article = Article.new(params.require(:article).permit(:title, :author, :text, :image))
@@ -56,6 +59,22 @@ class HomeController < ApplicationController
     respond_to do |format|
       format.json {render json: result}
     end
+  end
 
+  def wordsForAuthors
+    p "tu sam"
+    j = ActiveSupport::JSON
+    db = Mongo::Client.new([ '192.168.56.12:27017' ], :database => 'nmbp')
+
+    #MAPREDUCE #2
+    tmp = Strings.new
+    res = db[:articles].find().map_reduce(tmp.authors_map, tmp.authors_reduce).finalize(tmp.authors_finalize)
+    values = res.find().entries
+
+    db.close
+    result = j.encode({:values => values})
+    respond_to do |format|
+      format.json {render json: result}
+    end
   end
 end
