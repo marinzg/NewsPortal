@@ -7,12 +7,13 @@ Rails.application.routes.draw do
 
   get 'home/add'
 
+  get 'home/byNoOfComments'
+  
   post 'home/create'
 
   post 'home/comment'
 
   post 'home/wordsForAuthors'
-
 
   resources :article
 end

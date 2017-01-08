@@ -19,14 +19,14 @@
 
  .inline-news-left{
    display: inline-block;
-   width: 50%;
+   width: 60%;
    vertical-align: middle;
    margin-right: 2%;
  }
 
  .inline-news-right{
    display: inline-block;
-   width: 40%;
+   width: 30%;
    vertical-align: middle;
  }
 

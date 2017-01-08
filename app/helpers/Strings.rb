@@ -1,3 +1,5 @@
+# Class with string constants for
+# mongodb map and reduce functions.
 class Strings
 
   attr_accessor :comments_map
@@ -12,29 +14,35 @@ class Strings
     initializeAuthors
   end
 
+  # M/R functions for getting the number
+  # of comments for each article.
+  # (assigment 2.a)
   def initializeComments
     self.comments_map = %{
       function() {
         if(this.comments !== undefined)
-          emit(this._id, this.comments.length);
+          for(var i = 0; i < this.comments.length; i++) {
+            emit(this._id, 1);
+          }
+          if(this.comments.length == 0) emit(this._id, 0);
       }
     }.gsub(/\n/, '').gsub(/\s+/, ' ')
 
     self.comments_reduce = %{
       function(key, values) {
-        var article = {
-          _id : key,
-          count : 0
-        };
+        var count = 0;
 
         values.forEach(function(value) {
-          article.count += value;
+          count += value;
         });
-        return article;
+        return count;
       }
     }.gsub(/\n/, '').gsub(/\s+/, ' ')
   end
 
+  # M/R fin functions for getting top
+  # ten most used words for each author.
+  # (assigment 2.b)
   def initializeAuthors
     self.authors_map = %{
       function() {
@@ -70,8 +78,7 @@ class Strings
               tmp[obj.word] += obj.count;
           });
         });
-
-
+        
         Object.keys(tmp).forEach(function(word) {
           authorsWords.push({word: word, count: tmp[word]});
         });

@@ -6,6 +6,7 @@ function authorsWordCount(id) {
 
   var className = document.getElementById(id).className;
   if(className !== 'glyphicon glyphicon-chevron-down'){
+    //change arrow icon and show most used words div
     document.getElementById(id).className = 'glyphicon glyphicon-chevron-down';
     document.getElementById(mainDivId).style.display = 'block';
 
@@ -18,14 +19,19 @@ function authorsWordCount(id) {
           flag = 1;
       };
 
+    //if there is an authors div
+    //that is empty, fill the div
     if(flag == 0)
       getWordsCount();
 
   } else {
+    //change arrow icon and hide most used words div
     document.getElementById(id).className = 'glyphicon glyphicon-chevron-right';
     document.getElementById(mainDivId).style.display = 'none';
   }
 };
+
+
 function getWordsCount() {
   $.ajax({
     url: '/home/wordsForAuthors',
@@ -34,11 +40,14 @@ function getWordsCount() {
     result.values.forEach(function(res) {
       var divs = document.getElementsByClassName(res._id.replace(/\s/, '_'));
       var table = '<table  style="width: 20%; border-bottom: 0.5px solid black;"><tbody>';
+
+      //fill the table with top 10 words
       res.value.forEach(function(word) {
         table += '<tr style="border-bottom: 0.5px solid black;"><td style="width:80%;">' + word.word + '</td><td style="text-align: right;">' + word.count + "</td></tr>";
       });
       table += "</tbody></table>";
 
+      //put HTML in the corresponding divs
       for(var i = 0; i < divs.length; i++) {
         divs[i].innerHTML = table;
       }

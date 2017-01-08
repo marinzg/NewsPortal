@@ -1,0 +1,49 @@
+<div class="container">
+  <% @articles.each do |article| %>
+  <div>
+    <div class="inline-news-left">
+      <h2><%= article["title"] %></h2>
+      <p>[<%=article["_id"].generation_time%>]</p>
+      <p vertical-align="middle"><%= article["text"]%></p>
+    </div>
+
+    <div class="inline-news-right" >
+      <img style="width:112%; height:63%" src= <%= image_url(article["_id"]) %>/>
+    </div>
+
+    <div>
+      <span id="<%= article["author"].gsub(/\s/, '_')%>_<%= article["_id"] %>_button" onClick="authorsWordCount(id)" class="glyphicon glyphicon-chevron-right"/>
+      Author: <%= article["author"]%>
+    </div>
+
+    <div id="<%= article["author"].gsub(/\s/, '_')%>_<%= article["_id"] %>" style="display:none">
+      &nbsp; &nbsp;&nbsp; <u>Top 10 words for this author:</u>
+      <div class = "<%= article["author"].gsub(/\s/, '_')%> word-list"></div>
+    </div>
+
+    <div>
+      <span id="<%= article["_id"]%>_comment" onClick="commentsToogle(id)" class="glyphicon glyphicon-chevron-right"/>
+      Comments: <text id="<%= article["_id"]%>_comment_count">[<%= article["comments"].count%>]</text>
+    </div>
+
+    <div id="<%= article["_id"]%>_comments" style="display:none">
+      <ul id="comments<%= article["_id"] %>">
+        <% article["comments"].each do |comment| %>
+        <li>[<%=comment["timestamp"].localtime.strftime("%a %b %d %Y %H:%M")%>] => <%= comment["text"] %> </li>
+        <% end %>
+      </ul>
+
+      <div class="input-group" style="width:50%">
+        <input onkeypress="klik(event, '<%= article["_id"] %>')" id="com<%= article["_id"]%>" type="text" class="form-control">
+        <span class="input-group-btn">
+          <input class="btn btn-default" type="submit" onClick="submit('<%= article["_id"] %>')" value="Post"/>
+        </span>
+      </div>
+    </div>
+
+    <br>
+    <hr>
+    <br>
+  </div>
+  <% end %>
+</div>
