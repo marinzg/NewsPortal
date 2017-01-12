@@ -8,7 +8,7 @@
     </div>
 
     <div class="inline-news-right" >
-      <img style="width:112%; height:63%" src= <%= image_url(article["_id"]) %>/>
+      <img style="width:112%; height:63%" src = "data:image/<%= article["imgType"]%>;base64,<%= article["image"].data%>" />
     </div>
 
     <div>

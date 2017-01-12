@@ -41,15 +41,14 @@ class HomeController < ApplicationController
   def create
       @article = Article.new(params.require(:article).permit(:title, :author, :text, :image))
 
+
+      img = BSON::Binary.new(Base64.encode64(@article.image.read), :md5)
       exstension = @article.image.content_type.split('/')[1]
-      tmp_article = {title: @article.title, author: @article.author, text: @article.text, comments: []}
+      tmp_article = {title: @article.title, author: @article.author, text: @article.text, image: img, imgType: exstension,  comments: []}
 
       # add article to the database
       db = Mongo::Client.new([ '192.168.56.12:27017' ], :database => 'nmbp')
-      id = db[:articles].insert_one(tmp_article).inserted_id.to_s
-
-      # save image on the disk
-      file = File.open("app/assets/stylesheets/" + id + "." +  exstension, 'wb') {|f| f.write(@article.image.read) }
+      db[:articles].insert_one(tmp_article)
       db.close
 
       redirect_to root_path
@@ -98,4 +97,5 @@ class HomeController < ApplicationController
       format.json {render json: result}
     end
   end
+
 end
