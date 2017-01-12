@@ -78,7 +78,7 @@ class Strings
               tmp[obj.word] += obj.count;
           });
         });
-        
+
         Object.keys(tmp).forEach(function(word) {
           authorsWords.push({word: word, count: tmp[word]});
         });
@@ -89,7 +89,8 @@ class Strings
     self.authors_finalize = %{
       function(key, value){
         var tmp = value.words.sort(function(a, b){return b.count - a.count;});
-        tmp = tmp.slice(0,10);
+        if(tmp.length > 10)
+          tmp = tmp.slice(0,10);
         return tmp;
       }
     }.gsub(/\n/, '').gsub(/\s+/, ' ')
